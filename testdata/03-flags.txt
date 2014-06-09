@@ -1,0 +1,93 @@
+Test production flags (i-support, etc.)
+=== i support
+--- prod
+sp {isupport
+    :i-support
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== o support
+--- prod
+sp {osupport
+    :o-support
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== chunk
+--- prod
+sp {chunk
+    :chunk
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== default
+--- prod
+sp {default
+    :default
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== interrupt
+--- prod
+sp {intrpt
+    :interrupt
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== template
+--- prod
+sp {template
+    :template
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== monitor
+--- prod
+sp {monitor
+    :monitor
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== multiple
+--- prod
+sp {multiple
+    :interrupt
+    :i-support
+    :chunk
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== with doc
+--- prod
+sp {with-doc
+    "foo"
+    :i-support
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== bad flag
+--- prod
+sp {bad-flag
+    x-support
+    (state <s>)
+-->
+}
+--- parses: false

@@ -1,18 +1,22 @@
 package edu.umich.soar.parser;
 
+import java.util.EnumSet;
+
 /**
  * @author Brad Jones
  * @version 0.75 3 Mar 2000
  */
 public final class SoarProduction {
 	// Data Members
+	//TODO: save sp/gp/tp
 	private String d_name;
 	private int d_startLine;
 	private String d_comment;
 	private String d_productionType;
 	private ConditionSide d_conditionSide;
 	private ActionSide d_actionSide;
-	
+	private EnumSet<SoarProductionFlag> flags = EnumSet.noneOf(SoarProductionFlag.class);
+
 	// Constructors
 	public SoarProduction() {}
 		
@@ -27,6 +31,14 @@ public final class SoarProduction {
 	
 	public final void setProductionType(String productionType) {
 		d_productionType = new String(productionType);
+	}
+	
+	public final void addProductionFlag(SoarProductionFlag flag){
+		flags.add(flag);
+	}
+	
+	public final EnumSet<SoarProductionFlag> getProductionFLags(){
+		return flags;
 	}
 	
 	public final void setStartLine(int startLine) {

@@ -136,7 +136,7 @@ SoarProduction soarProduction() :
 	ConditionSide cs;
 	ActionSide as;
 	Token t;
-	String s;
+	SoarProductionFlag flag;
 }
 {
 // Begining of the production
@@ -159,7 +159,7 @@ SoarProduction soarProduction() :
   	  }
   	)?
 // production type
-	(s = productionType() { sp.setProductionType(s); } )?
+	(flag = productionType() { sp.addProductionFlag(flag); } )*
 	cs = conditionSide() 
 	{ sp.setConditionSide(cs); }
 	<RARROW>
@@ -172,13 +172,15 @@ SoarProduction soarProduction() :
     }
 }
 
-String productionType() :
+
+SoarProductionFlag productionType() :
 {
 	Token t;
 }
 {
 	t = <PRODTYPE>{
-		return t.image;
+	    //remove the leading colon to get the flag name
+		return SoarProductionFlag.getFlagByName(t.image.substring(1));
 	}
 }
 
