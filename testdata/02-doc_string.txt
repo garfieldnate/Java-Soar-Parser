@@ -1,0 +1,56 @@
+Test documentation strings
+=== empty quote
+--- prod
+sp {empty-quote
+	""
+	(state <s>)
+-->
+}
+--- parses: true
+
+=== one line quote
+--- prod
+sp {one-line-quote
+	"stuff that I think is cool"
+	(state <s>)
+-->
+}
+--- parses: true
+
+=== two line quote
+--- prod
+sp {two-line-quote
+	"stuff that I 
+	think is cool"
+	(state <s>)
+-->
+}
+--- parses: true
+
+=== unicode
+--- prod
+sp {utf8
+	"ã��"
+	(state <s>)
+-->
+}
+--- parses: true
+
+=== two lines, two quotes
+--- prod
+sp {twice-doc
+	"this production"
+	"shouldn't load"
+	(state <s>)
+-->
+}
+--- parses: false
+
+=== missing quote
+--- prod
+sp {twice-doc
+	"bad
+	(state <s>)
+-->
+}
+--- parses: false

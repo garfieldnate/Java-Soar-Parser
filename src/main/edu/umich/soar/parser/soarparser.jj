@@ -92,6 +92,7 @@ TOKEN:
 	 |<LSQBRACET:   "[">
 	 |<RSQBRACET:   "]">
 	 |<QUOTE:		"\"">
+	 |<DOC_STRING: "\"" (~["\""])* "\"">
      |<PRODTYPE:  (":chunk"|":default"|":o-support"|":i-support"|":monitor"|":interrupt"|":template")>
 	 // I know the variable looks weird but it does appear to be correct
 	 |<VARIABLE: "<" (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","=","?","_"])+ ">" >
@@ -151,7 +152,12 @@ SoarProduction soarProduction() :
 		sp.setStartLine(t.beginLine);
 	}
 // optional comment
-	handleDocumentationQuote(sp)
+	(
+	  t = <DOC_STRING> {
+	    //save the documentation strings, minus the quotation marks
+	    sp.setComment(t.image.substring(1,t.image.length()-1));
+  	  }
+  	)?
 // production type
 	(s = productionType() { sp.setProductionType(s); } )?
 	cs = conditionSide() 
@@ -174,20 +180,6 @@ String productionType() :
 	t = <PRODTYPE>{
 		return t.image;
 	}
-}
-
-JAVACODE
-void handleDocumentationQuote(SoarProduction sp)
-{
-	Token tok = getToken(1);
-	if(tok.kind == QUOTE) {
-		getNextToken();
-		while(getToken(1).kind != QUOTE) {
-			getNextToken();
-		}
-		getNextToken();
-	}
-	sp.setComment("");
 }
 
 /////////////////////////////////////////////////////////////
