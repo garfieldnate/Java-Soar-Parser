@@ -22,13 +22,18 @@ options
 PARSER_BEGIN(SoarParser)
 package edu.umich.soar.parser;
 import java.util.*;
+import java.util.regex.Pattern;
 /**
 	@author Brad Jones
 	if you are looking at the java file, it isn't going to make a lot of sense
 	I used the Java Compiler Compiler to make the lexer and parser
 	the homepage is http://www.metamata.com
 */
-public class SoarParser {}
+public class SoarParser {
+	private static Pattern productionNamePattern = Pattern.compile("[0-9a-zA-Z][0-9a-zA-Z$%&*/<=>?_@:-]*");
+	private static Pattern symbolicConstantPattern = Pattern.compile("[a-zA-Z0-9$%&*+/<=>?_-][a-zA-Z0-9$%&*+/:<=>?_-]*");
+	private static Pattern quotedConstantPattern = Pattern.compile("\\|\\s*[^|]*\\s*\\|");
+}
 PARSER_END(SoarParser)
 
 SKIP: 
@@ -91,7 +96,8 @@ TOKEN:
 	 // I know the variable looks weird but it does appear to be correct
 	 |<VARIABLE: "<" (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","=","?","_"])+ ">" >
 	 |<INTEGER_CONST: (["+","-"])? (["0"-"9"])+ >
-	 |<SYMBOLIC_CONST: (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/","<","=",">","?","_"])(["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","<","=",">","?","_"])* | ("|" (~["|"])* "|") >
+	 // this is symbolic constant, production name, and condition type all in one; need additional checking at parse time
+	 |<SYMBOLIC_CONST: (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/","<","=",">","?","_"])(["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","<","=",">","?","@","_"])* | ("|" (~["|"])* "|") >
 	 |<FLOATING_POINT_CONST: 
 	 					(["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
 	 				| "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
@@ -137,7 +143,11 @@ SoarProduction soarProduction() :
 	(<LBRACE> | <QUOTE>)
 // its name	
 	t = <SYMBOLIC_CONST>
-	{   sp.setName(t.image);
+	{   
+		if(!productionNamePattern.matcher(t.image).matches()){
+			throw new ParseException("illegal production name: " + t.image);
+		}
+		sp.setName(t.image);
 		sp.setStartLine(t.beginLine);
 	}
 // optional comment
@@ -272,6 +282,7 @@ ConditionForOneIdentifier conditionForOneIdentifier() :
 			hasState = true; 
 		else 
 			throw new ParseException("only state allowed.");
+			//TODO: what about 'interrupt'?
 	})? 
 	t = <VARIABLE>
 	{
@@ -460,7 +471,12 @@ Constant constant() :
 			return new Constant(t.image,t.beginLine);
 		}
 	}
-	| t = <SYMBOLIC_CONST> {
+	|
+	LOOKAHEAD({ 
+		getToken(1).kind == SYMBOLIC_CONST && (
+			symbolicConstantPattern.matcher(getToken(1).image).matches() || quotedConstantPattern.matcher(getToken(1).image).matches()) 
+	})
+	t = <SYMBOLIC_CONST> {
 		return new Constant(t.image,t.beginLine);
 	}
 	| t = <FLOATING_POINT_CONST> {
@@ -574,7 +590,11 @@ Pair functionName() :
 {
 	Token t;
 }
-{	
+{
+	LOOKAHEAD({ 
+		getToken(1).kind == SYMBOLIC_CONST && (
+			symbolicConstantPattern.matcher(getToken(1).image).matches() || quotedConstantPattern.matcher(getToken(1).image).matches()) 
+	})
 	(t = <SYMBOLIC_CONST> {
 		return new Pair(t.image,t.beginLine);
 	} )

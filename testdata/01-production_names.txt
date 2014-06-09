@@ -111,3 +111,19 @@ sp {aぐ
 -->	(<s> ^foo <bar>)
 }
 --- parses: false
+
+=== name is state
+--- prod
+sp {state
+	(state <s>)
+-->
+}
+--- parses: true
+
+=== name is interrupt
+--- prod
+sp {interrupt
+	(state <s>)
+-->
+}
+--- parses: true
