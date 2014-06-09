@@ -1,0 +1,113 @@
+Test that production names are correctly parsed or rejected 
+=== alphanumeric
+--- prod
+sp {0123456789AbCdZz
+	(state <s>)
+-->
+	(<s> ^foo <bar>)
+}
+--- parses: true
+
+=== alpha and then a bunch of junk
+--- prod
+sp {a$%&*=<>?_-/
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: true
+
+=== number and then a bunch of junk
+--- prod
+sp {1$%&*=@<>?_-/
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: true
+
+=== doesn't start with alphanumeric
+--- prod
+sp {$a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== colon
+--- prod
+sp {a:a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: true
+
+=== comma
+--- prod
+sp {a,a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== exclamation point
+--- prod
+sp {a!a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== plus
+--- prod
+sp {a+a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== bracket
+--- prod
+sp {a[a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== bar
+--- prod
+sp {a|a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== forward slash
+--- prod
+sp {a\a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== period
+--- prod
+sp {a.a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== semicolon
+--- prod
+sp {a;a
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
+
+=== not ASCII
+--- prod
+sp {aぐ
+	(state <s>)
+-->	(<s> ^foo <bar>)
+}
+--- parses: false
