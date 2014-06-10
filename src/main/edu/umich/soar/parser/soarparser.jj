@@ -36,7 +36,7 @@ public class SoarParser {
 }
 PARSER_END(SoarParser)
 
-SKIP: 
+SKIP:
 {
 	 < "#" (~["\n","\r"])*>
 	|<";#" (~["\n","\r"])*>
@@ -49,11 +49,11 @@ SKIP:
 TOKEN:
 {
     <SP:        "sp"> : IN_SOAR_PRODUCTION
-    |<GP:       "gp"> : IN_SOAR_PRODUCTION 
+    |<GP:       "gp"> : IN_SOAR_PRODUCTION
     |<SOARCMD:  ("global"|"set"|"puts"|"alias"|"attention-lapse"|"attribute_preferences_mode"|"capture-input"|"chunk-name-format"|"command-to-file"|"default_wme_depth"|"dirs"|"echo"|"epmem"|"excise"|"explain-backtraces"|"firing-counts"|"format-watch"|"gds_print"|"help"|"indifferent-selection"|"init-soar"|"input-period"|"internal-symbols"|"io"|"learn"|"log"|"matches"|"max-chunks"|"max-elaborations"|"max-nil-output-cycles"|"max_chunks"|"max_elaborations"|"memories"|"monitor"|"multi-attributes"|"o-support-mode"|"output-strings-destination"|"o_support_mode"|"popd"|"predefined-aliases"|"predict"|"preferences"|"print"|"production-find"|"pushd"|"pwatch"|"quit"|"remove-wme"|"replay-input"|"rete-net"|"rhsfun"|"rl"|"run"|"save_backtraces"|"select"|"send"|"soar"|"soar8"|"soarnews"|"soartk"|"start-attention-lapse"|"stats"|"stop-soar"|"topd"|"tsi"|"unalias"|"variables"|"version"|"viSTEAM"|"vt"|"vtutor"|"wake-from-attention-lapse"|"wake"|"warnings"|"watch")(~["\n","\r"])*>
 }
 
-< IN_SOAR_PRODUCTION > SKIP: 
+< IN_SOAR_PRODUCTION > SKIP:
 {
 	 < "#" (~["\n","\r"])*>
 	|<";#" (~["\n","\r"])*>
@@ -99,7 +99,7 @@ TOKEN:
 	 |<INTEGER_CONST: (["+","-"])? (["0"-"9"])+ >
 	 // this is symbolic constant, production name, and condition type all in one; need additional checking at parse time
 	 |<SYMBOLIC_CONST: (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/","<","=",">","?","_"])(["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","<","=",">","?","@","_"])* | ("|" (~["|"])* "|") >
-	 |<FLOATING_POINT_CONST: 
+	 |<FLOATING_POINT_CONST:
 	 					(["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
 	 				| "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
 	 				| (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
@@ -142,9 +142,9 @@ SoarProduction soarProduction() :
 // Begining of the production
 	<SP>
 	(<LBRACE> | <QUOTE>)
-// its name	
+// its name
 	t = <SYMBOLIC_CONST>
-	{   
+	{
 		if(!productionNamePattern.matcher(t.image).matches()){
 			throw new ParseException("illegal production name: " + t.image);
 		}
@@ -160,10 +160,10 @@ SoarProduction soarProduction() :
   	)?
 // production type
 	(flag = productionType() { sp.addProductionFlag(flag); } )*
-	cs = conditionSide() 
+	cs = conditionSide()
 	{ sp.setConditionSide(cs); }
 	<RARROW>
-	as = actionSide() 
+	as = actionSide()
 	{ sp.setActionSide(as); }
 	(<RBRACE> | <QUOTE>)
 	{
@@ -189,22 +189,22 @@ SoarProductionFlag productionType() :
 /*
 	The grammar that this recognizes
 	<ConditionSide> 			::= <Condition>+
-	<FirstCondition>			::= '(' "state" VARIABLE <AttributeValueTest>* ')' 
+	<FirstCondition>			::= '(' "state" VARIABLE <AttributeValueTest>* ')'
 	<Condition>					::= ['-'] PositiveCondition | TCL_PREPROCESS
 	<PositiveCondition>	    	::= <ConditionForOneIdentifier>
 									| '{' <Condition>+ '}'
 	<ConditionForOneIdentifier>	::= '(' VARIABLE <AttributeValueTest>* ')'
-	<AttributeValueTest>		::= ['-'] ^ <AttributeTest> ['.'<AttributeTest>]* <ValueTest>* 
+	<AttributeValueTest>		::= ['-'] ^ <AttributeTest> ['.'<AttributeTest>]* <ValueTest>*
 	<AttributeTest>				::= <Test>
 	<ValueTest>					::= <Test> ['+']
 	<Test> 						::= <ConjunctiveTest> | <SimpleTest>
 	<ConjunctiveTest>			::= '{' <SimpleTest>+ '}'
 	<SimpleTest>				::= <DisjunctionTest> | <RelationalTest>
 	<DisjunctionTest>			::= '<<' <Constant>+ '>>'
-	<RelationalTest>            ::=	 [<Relation>] <SingleTest>	
+	<RelationalTest>            ::=	 [<Relation>] <SingleTest>
 	<Relation>					::=  '<>' | '<=>' | '<' | '<=' | '>=' | '>' | '='
 	<SingleTest>				::= <Constant> | VARIABLE
-	<Constant> 					::= INTEGER_CONST | SYMBOLIC_CONST | FLOATING_POINT_CONST	
+	<Constant> 					::= INTEGER_CONST | SYMBOLIC_CONST | FLOATING_POINT_CONST
 */
 
 // Ok
@@ -229,20 +229,20 @@ Condition condition() :
 	PositiveCondition pcond;
 }
 {
-	(<HYPHEN> { negated = true; })? 
+	(<HYPHEN> { negated = true; })?
 	(pcond = positiveCondition())
 	{ return new Condition(negated,pcond); }
 	| <TCL_PREPROCESS>
-	{ return null; } 
+	{ return null; }
 }
 
 // Ok
-PositiveCondition positiveCondition() : 
+PositiveCondition positiveCondition() :
 {
 	ConditionForOneIdentifier cfoi;
 	Condition cond;
 	PositiveCondition retVal;
-	
+
 }
 {
 	(cfoi = conditionForOneIdentifier()) {
@@ -251,7 +251,7 @@ PositiveCondition positiveCondition() :
 	| (<LBRACE>
 		{
 			retVal = new PositiveCondition();
-		} 
+		}
 		(cond = condition()
 		{
 			retVal.add(cond);
@@ -266,29 +266,41 @@ ConditionForOneIdentifier conditionForOneIdentifier() :
 {
 	Token t;
 	AttributeValueTest avt;
-	ConditionForOneIdentifier cfoi;
+	ConditionForOneIdentifier cfoi = null;
 	StateDeclaration state = StateDeclaration.NONE;
 }
 {
 	<LPAREN>
-	( (t = <SYMBOLIC_CONST> { 
-		if(t.image.equals("state"))	
-			state = StateDeclaration.STATE; 
-		else if(t.image.equals("impasse"))
-			state = StateDeclaration.IMPASSE;
-		else
-			throw new ParseException("only state allowed.");
-			//TODO: what about 'interrupt'?
-	})? 
-	t = <VARIABLE>
+	(
+		t = <SYMBOLIC_CONST> {
+			if(t.image.equals("state"))
+				state = StateDeclaration.STATE;
+			else if(t.image.equals("impasse"))
+				state = StateDeclaration.IMPASSE;
+			else
+				throw new ParseException("only state allowed.");
+		}
+	)?
+	(
+		(t = <VARIABLE>
+		{
+			cfoi = new ConditionForOneIdentifier(state,new Pair(t.image,t.beginLine));
+		}
+		)?
+	)
 	{
-		cfoi = new ConditionForOneIdentifier(state,new Pair(t.image,t.beginLine));
-	})
-	(avt = attributeValueTest()
-	{
-		cfoi.add(avt);
-	})*
-	<RPAREN>	
+	    //for conditions that don't bind with a variable, which often give warnings or even crash Soar, but should still parse
+		if(cfoi == null){
+			cfoi = new ConditionForOneIdentifier(state, null);
+		}
+	}
+	(
+	  avt = attributeValueTest()
+	  {
+		  cfoi.add(avt);
+	  }
+	)*
+	<RPAREN>
 	{ return cfoi; }
 }
 
@@ -303,14 +315,14 @@ AttributeValueTest attributeValueTest() :
 	(<HYPHEN>
 	{
 		avt.negate();
-	})? 
-	<CARET> 
+	})?
+	<CARET>
 	(at = attributeTest())
 	{ avt.add(at); }
-	(<PERIOD> at = attributeTest() { avt.add(at); })* 
+	(<PERIOD> at = attributeTest() { avt.add(at); })*
 	(vt = valueTest() { avt.add(vt); } )*
 	{ return avt;}
-	
+
 }
 
 // Ok
@@ -319,7 +331,7 @@ AttributeTest attributeTest() :
 	Test t;
 }
 {
-	t = test() 
+	t = test()
 	{ return new AttributeTest(t); }
 }
 
@@ -332,14 +344,14 @@ ValueTest valueTest() :
 {
 	  t = test() {
 	  	vt = new ValueTest(t);
-	  } 
-	  (<PLUS>{ 
+	  }
+	  (<PLUS>{
 	  	vt.acceptablePreference();
 	  }
 	  )?
 	  { return vt; }
-	  
-	// | ConditionsForOneId() John Laird told me to take this out 7/6/99 
+
+	// | ConditionsForOneId() John Laird told me to take this out 7/6/99
 }
 
 // Ok
@@ -353,17 +365,17 @@ Test test() :
 	{ return new Test(ct); }
 	| st = simpleTest()
 	{ return new Test(st); }
-} 
+}
 
 // Ok
 ConjunctiveTest conjunctiveTest() :
-{ 
+{
 	ConjunctiveTest retVal = new ConjunctiveTest();
 	SimpleTest st;
 }
 {
 	<LBRACE>
-	( st = simpleTest() 
+	( st = simpleTest()
 	{ retVal.add(st);}
 	)+
 	<RBRACE>
@@ -377,10 +389,10 @@ SimpleTest simpleTest() :
 	RelationalTest rt;
 }
 {
-	 dt = disjunctionTest() 
+	 dt = disjunctionTest()
 	 { return new SimpleTest(dt); }
-	 | rt = relationalTest() 
-	 { return new SimpleTest(rt);} 
+	 | rt = relationalTest()
+	 { return new SimpleTest(rt);}
 }
 
 
@@ -447,7 +459,7 @@ SingleTest singleTest() :
 	t = <VARIABLE>	{
 		return new SingleTest(new Pair(t.image,t.beginLine));
 	}
-	| 
+	|
 	c = constant() {
 	  	return new SingleTest(c);
 	}
@@ -468,9 +480,9 @@ Constant constant() :
 		}
 	}
 	|
-	LOOKAHEAD({ 
+	LOOKAHEAD({
 		getToken(1).kind == SYMBOLIC_CONST && (
-			symbolicConstantPattern.matcher(getToken(1).image).matches() || quotedConstantPattern.matcher(getToken(1).image).matches()) 
+			symbolicConstantPattern.matcher(getToken(1).image).matches() || quotedConstantPattern.matcher(getToken(1).image).matches())
 	})
 	t = <SYMBOLIC_CONST> {
 		return new Constant(t.image,t.beginLine);
@@ -503,13 +515,13 @@ Constant constant() :
    <AttributeValueMake> ::= ^ <RHSValue> ['.'<RHSValue>]* <ValueMake>+
    <ValueMake> ::= <RHSValue> <Preferences>
 
-   <Preferences> ::= <PreferenceSpecifier>*   
+   <Preferences> ::= <PreferenceSpecifier>*
    <PreferenceSpecifier> ::= <NaturallyUnaryPreference> [,]
                             | <ForcedUnaryPreference>
                             | <BinaryPreference> <RHSValue> [,]
-   <NaturallyUnaryPreference> ::= + | - | ! | ~ 
-   <BinaryPreference> ::= > | = | < 
-   <ForcedUnaryPreference> ::= <BinaryPreference> [,]   
+   <NaturallyUnaryPreference> ::= + | - | ! | ~
+   <BinaryPreference> ::= > | = | <
+   <ForcedUnaryPreference> ::= <BinaryPreference> [,]
 ===================================================================== */
 
 // Done
@@ -519,7 +531,7 @@ ActionSide actionSide() :
 	Action a;
 }
 {
-	(a = action() { 
+	(a = action() {
 		if(a != null)
 			retVal.add(a);
 	})*
@@ -556,9 +568,9 @@ VarAttrValMake varAttrValMake() :
 }
 {
 	<LPAREN>
-	(t = <VARIABLE> 
+	(t = <VARIABLE>
 	{ retVal = new VarAttrValMake(new Pair(t.image,t.beginLine));})
-	(avm = attributeValueMake() { retVal.add(avm); })+ 
+	(avm = attributeValueMake() { retVal.add(avm); })+
 	<RPAREN>
 	{ return retVal; }
 }
@@ -571,13 +583,13 @@ FunctionCall functionCall() :
 	RHSValue rhsv;
 }
 {
-	<LPAREN>	
+	<LPAREN>
 	(funcName = functionName() { funcCall = new FunctionCall(funcName); } )
 	(
 	rhsv = rhsValue() { funcCall.add(rhsv); }
 	| <TCL_PREPROCESS>
 	)*
-	<RPAREN>	
+	<RPAREN>
 	{ return funcCall; }
 }
 
@@ -587,9 +599,9 @@ Pair functionName() :
 	Token t;
 }
 {
-	LOOKAHEAD({ 
+	LOOKAHEAD({
 		getToken(1).kind == SYMBOLIC_CONST && (
-			symbolicConstantPattern.matcher(getToken(1).image).matches() || quotedConstantPattern.matcher(getToken(1).image).matches()) 
+			symbolicConstantPattern.matcher(getToken(1).image).matches() || quotedConstantPattern.matcher(getToken(1).image).matches())
 	})
 	(t = <SYMBOLIC_CONST> {
 		return new Pair(t.image,t.beginLine);
@@ -615,12 +627,12 @@ RHSValue rhsValue() :
 		return new RHSValue(c);
 	})
 	| (fc = functionCall()
-	{ 
+	{
 		return new RHSValue(fc);
 	} )
-	| (t = <VARIABLE> 
-	{ 
-		return new RHSValue(new Pair(t.image,t.beginLine)); 
+	| (t = <VARIABLE>
+	{
+		return new RHSValue(new Pair(t.image,t.beginLine));
 	})
 }
 
@@ -632,16 +644,16 @@ AttributeValueMake attributeValueMake() :
 	ValueMake vm;
 }
 {
-	<CARET> (rhsv = rhsValue() 
+	<CARET> (rhsv = rhsValue()
 	{ avm.add(rhsv); })
-	
-	(<PERIOD> rhsv = rhsValue() { avm.add(rhsv); })* 
+
+	(<PERIOD> rhsv = rhsValue() { avm.add(rhsv); })*
 	( vm = valueMake() { avm.add(vm); } )+
 	{return avm; }
 }
 
 
-// Ok 
+// Ok
 ValueMake valueMake() :
 {
 	PreferenceSpecifier ps;
@@ -649,14 +661,14 @@ ValueMake valueMake() :
 	ValueMake vm;
 }
 {
-	rhsv = rhsValue() 
+	rhsv = rhsValue()
 	{ vm = new ValueMake(rhsv); }
-	 
+
 	(	(ps = preferenceSpecifier()
 		{ vm.add(ps); })
 	)*
 	{ return vm; }
-	
+
 }
 
 
@@ -704,13 +716,13 @@ int binaryPreference() :
 	{ return BinaryPreference.LESS; }
 	| <AMPERSAND>
 	{ return BinaryPreference.AMPERSAND; }
-	
+
 }
 
 
 // Ok
 ForcedUnaryPreference forcedUnaryPreference() :
-{ 
+{
 	int type;
 }
 {

@@ -1,0 +1,81 @@
+Conditions which have attribute/value matches but no bound variable parse,
+but Soar prints a warning:
+ Warning: On the LHS of production xyz, identifier <s*1>
+ is not connected to any goal or impasse.
+The two that say "Crashes Soar" are related to this bug:
+https://code.google.com/p/soar/issues/detail?id=161
+=== empty condition
+Crashes Soar
+--- prod
+sp {empty-condition
+    ()
+-->
+}
+--- parses: true
+
+=== state only
+--- prod
+sp {state-only
+    (state)
+-->
+}
+--- parses: true
+
+=== state with variable
+--- prod
+sp {state-variable
+    (state <s>)
+-->
+}
+--- parses: true
+
+=== state with assignment
+Prints a warning in Soar
+--- prod
+sp {state-assignment
+    (state ^foo <bar>)
+-->
+}
+--- parses: true
+
+=== state with variable and assignment
+--- prod
+sp {state-var-assignment
+    (state <s> ^foo <bar>)
+-->
+}
+--- parses: true
+
+=== assignment without state or variable
+Prints a warning in Soar
+--- prod
+sp {unbound-assignment
+    (^foo <baz>)
+-->
+}
+--- parses: true
+
+=== variable with no state or assignment
+Crashes Soar
+--- prod
+sp {variable-alone
+    (<bar>)
+-->
+}
+--- parses: true
+
+=== impasse only
+--- prod
+sp {impasse
+    (impasse)
+-->
+}
+--- parses: true
+
+=== impasse with variable and assignment
+--- prod
+sp {impasse
+    (impasse <i> ^foo <bar>)
+--> (<i> ^foo <bar>)
+}
+--- parses: true
