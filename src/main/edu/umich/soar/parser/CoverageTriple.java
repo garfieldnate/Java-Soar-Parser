@@ -20,13 +20,13 @@ public class CoverageTriple extends Triple {
 		d_isChecking = isChecking;
 	}
 	
-	public CoverageTriple(Pair variable,Pair attribute,Pair value,boolean hasState,boolean isChecking) {
-		super(variable,attribute,value,hasState);
+	public CoverageTriple(Pair variable,Pair attribute,Pair value,StateDeclaration stateDeclaration,boolean isChecking) {
+		super(variable,attribute,value,stateDeclaration);
 		d_isChecking = isChecking;
 	}
 	
 	public CoverageTriple(Triple triple,boolean isChecking) {
-		super(triple.getVariable(),triple.getAttribute(),triple.getValue(),triple.hasState());
+		super(triple.getVariable(),triple.getAttribute(),triple.getValue(),triple.stateDeclaration());
 		d_isChecking = isChecking;
 	}
 	

@@ -5,7 +5,7 @@ public class Triple {
 	Pair d_variable;
 	Pair d_attribute;
 	Pair d_value;
-	boolean d_hasState = false;
+	StateDeclaration stateDeclaration = StateDeclaration.none;
 	int d_line;
   boolean d_condition = true;   // for keeping track of whether a condition or action
                               // default is condition
@@ -20,19 +20,19 @@ public class Triple {
 		d_value = value;
 	}
 
-	public Triple(Pair variable,Pair attribute,Pair value, boolean hasState) {
+	public Triple(Pair variable,Pair attribute,Pair value, StateDeclaration stateDeclaration) {
 		this(variable,attribute,value);
-		d_hasState = hasState;
+		this.stateDeclaration = stateDeclaration;
 	}
 
-  public Triple(Pair variable,Pair attribute,Pair value, boolean hasState, boolean in_condition) {
-		this(variable,attribute,value, hasState);
+  public Triple(Pair variable,Pair attribute,Pair value, StateDeclaration stateDeclaration, boolean in_condition) {
+		this(variable,attribute,value, stateDeclaration);
 		d_condition = in_condition;
 	}
 
 	// Accessors
-	public boolean hasState() {
-		return d_hasState;
+	public StateDeclaration stateDeclaration() {
+		return stateDeclaration;
 	}
 	
 	public Pair getVariable() {

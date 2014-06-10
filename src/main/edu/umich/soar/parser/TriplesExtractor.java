@@ -174,7 +174,7 @@ public class TriplesExtractor {
 		List triples = new LinkedList();
 		// Get all the attribute Value tests
 		Iterator i = cfoi.getAttributeValueTests();
-		boolean hasState = cfoi.hasState();
+		StateDeclaration stateDeclaration = cfoi.stateDeclaration();
 		
 		// For all the attribute value tests
 		while(i.hasNext()) {
@@ -200,11 +200,11 @@ public class TriplesExtractor {
 					Iterator j = attributes.iterator();
 					while(j.hasNext()) {
 						Pair attr = (Pair)j.next();
-						triples.add(d_tripleFactory.createTriple(variable,attr,newVariable,hasState,true, true));
+						triples.add(d_tripleFactory.createTriple(variable,attr,newVariable,stateDeclaration,true, true));
 					}
 					attributes = newAttributes;
 					variable = newVariable;
-					hasState = false;
+					stateDeclaration = StateDeclaration.none;
 				}
 			}
 			
@@ -242,7 +242,7 @@ public class TriplesExtractor {
 				j = values.iterator();
 				while(j.hasNext()) {
 					Pair val = (Pair)j.next();
-					triples.add(d_tripleFactory.createTriple(variable,attr,val,hasState,true, true));
+					triples.add(d_tripleFactory.createTriple(variable,attr,val,stateDeclaration,true, true));
 				}
 			}
 		}
@@ -297,7 +297,7 @@ public class TriplesExtractor {
 				else {
 					Pair newAttributeMakes = extract((RHSValue)j.next());
 					Pair newVariable = getNextUnnamedVar();
-					triples.add(d_tripleFactory.createTriple(variable,attributeMakes,newVariable,false,false, false));
+					triples.add(d_tripleFactory.createTriple(variable,attributeMakes,newVariable,StateDeclaration.none,false, false));
 					attributeMakes = newAttributeMakes;
 					variable = newVariable;
 				}
@@ -306,7 +306,7 @@ public class TriplesExtractor {
 			while(j.hasNext()) {
 				ValueMake vm = (ValueMake)j.next();
 				Pair value = extract(vm.getRHSValue());
-				triples.add(d_tripleFactory.createTriple(variable,attributeMakes,value,false,false, false));
+				triples.add(d_tripleFactory.createTriple(variable,attributeMakes,value,StateDeclaration.none,false, false));
 			}
 		}
 		return triples;
@@ -340,7 +340,7 @@ public class TriplesExtractor {
 		Iterator i = d_triples.iterator();
 		while(i.hasNext()) {
 			Triple t = (Triple)i.next();
-			if(t.hasState())
+			if(t.stateDeclaration() != StateDeclaration.none)
 				d_stateVariables.add(t.getVariable());
 		}
 	}

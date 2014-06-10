@@ -4,19 +4,19 @@ import java.util.*;
 
 public final class ConditionForOneIdentifier {
 	// Data Members
-	private boolean d_hasState;
+	private StateDeclaration state;
 	private Pair d_variable;
 	private List d_attributeValueTests = new LinkedList();
 	
 	// Constructor
-	public ConditionForOneIdentifier(boolean hasState,Pair variable) {
+	public ConditionForOneIdentifier(StateDeclaration state, Pair variable) {
 		d_variable = variable;
-		d_hasState = hasState;
+		this.state = state;
 	}
 		
 	// Accessor
-	public final boolean hasState() {
-		return d_hasState;
+	public final StateDeclaration stateDeclaration() {
+		return state;
 	}
 	
 	public final Pair getVariable() {

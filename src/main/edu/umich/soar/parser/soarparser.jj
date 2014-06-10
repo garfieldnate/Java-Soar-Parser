@@ -267,20 +267,23 @@ ConditionForOneIdentifier conditionForOneIdentifier() :
 	Token t;
 	AttributeValueTest avt;
 	ConditionForOneIdentifier cfoi;
+	StateDeclaration state = StateDeclaration.none;
 	boolean hasState = false;
 }
 {
 	<LPAREN>
 	( (t = <SYMBOLIC_CONST> { 
 		if(t.image.equals("state"))	
-			hasState = true; 
-		else 
+			state = StateDeclaration.state; 
+		else if(t.image.equals("impasse"))
+			state = StateDeclaration.impasse;
+		else
 			throw new ParseException("only state allowed.");
 			//TODO: what about 'interrupt'?
 	})? 
 	t = <VARIABLE>
 	{
-		cfoi = new ConditionForOneIdentifier(hasState,new Pair(t.image,t.beginLine));
+		cfoi = new ConditionForOneIdentifier(state,new Pair(t.image,t.beginLine));
 	})
 	(avt = attributeValueTest()
 	{
