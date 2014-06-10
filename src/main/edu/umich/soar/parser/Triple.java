@@ -5,7 +5,7 @@ public class Triple {
 	Pair d_variable;
 	Pair d_attribute;
 	Pair d_value;
-	StateDeclaration stateDeclaration = StateDeclaration.none;
+	StateDeclaration stateDeclaration = StateDeclaration.NONE;
 	int d_line;
   boolean d_condition = true;   // for keeping track of whether a condition or action
                               // default is condition

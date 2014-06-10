@@ -6,13 +6,13 @@ package edu.umich.soar.parser;
  *
  */
 public enum SoarProductionFlag {
-	isupport("i-support"),
-	osupport("o-support"),
-	chunk("chunk"),
-	def("default"),
-	interrupt("interrupt"),
-	template("template"),
-	monitor("monitor");
+	I_SUPPORT("i-support"),
+	O_SUPPORT("o-support"),
+	CHUNK("chunk"),
+	DEFAULT("default"),
+	INTERRUPT("interrupt"),
+	TEMPLATE("template"),
+	MONITOR("monitor");
 	
 	String name;
 	private SoarProductionFlag(String name){

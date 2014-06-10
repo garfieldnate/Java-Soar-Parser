@@ -10,5 +10,5 @@ package edu.umich.soar.parser;
  *
  */
 public enum StateDeclaration {
-	state, impasse, none;
+	STATE, IMPASSE, NONE;
 }

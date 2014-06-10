@@ -267,16 +267,16 @@ ConditionForOneIdentifier conditionForOneIdentifier() :
 	Token t;
 	AttributeValueTest avt;
 	ConditionForOneIdentifier cfoi;
-	StateDeclaration state = StateDeclaration.none;
+	StateDeclaration state = StateDeclaration.NONE;
 	boolean hasState = false;
 }
 {
 	<LPAREN>
 	( (t = <SYMBOLIC_CONST> { 
 		if(t.image.equals("state"))	
-			state = StateDeclaration.state; 
+			state = StateDeclaration.STATE; 
 		else if(t.image.equals("impasse"))
-			state = StateDeclaration.impasse;
+			state = StateDeclaration.IMPASSE;
 		else
 			throw new ParseException("only state allowed.");
 			//TODO: what about 'interrupt'?
