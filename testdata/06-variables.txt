@@ -1,0 +1,64 @@
+test tokenizing of good/bad variable strings
+=== basic
+--- prod
+sp {alphabetic
+    (state <s>)
+--> (<s> ^foo <bar>)
+}
+--- parses: true
+
+=== junk name
+--- prod
+sp {lots-o-garbage
+    (state <AZaz09$%&*+/:=?_->)
+--> (<AZaz09$%&*+/:=?_-> ^foo <bar>)
+}
+--- parses: true
+
+=== no alphanumeric
+--- prod
+sp {lots-o-garbage
+    (state <$%&*+/:=?_->)
+--> (<$%&*+/:=?_-> ^foo <bar>)
+}
+--- parses: true
+
+=== empty name
+--- prod
+sp {empty
+    (state <>)
+--> (<> ^foo <bar>)
+}
+--- parses: false
+
+=== space
+--- prod
+sp {empty
+    (state <a b>)
+--> (<a b> ^foo <bar>)
+}
+--- parses: false
+
+=== empty name
+--- prod
+sp {empty
+    (state <>)
+--> (<> ^foo <bar>)
+}
+--- parses: false
+
+=== contains period
+--- prod
+sp {lots-o-garbage
+    (state <a.a>)
+--> (<a.a> ^foo <bar>)
+}
+--- parses: false
+
+=== contains forward slash
+--- prod
+sp {lots-o-garbage
+    (state <a\a>)
+--> (<a\a> ^foo <bar>)
+}
+--- parses: false
