@@ -1,0 +1,66 @@
+Check that strings (the value of ^foo in the test productions) are correctly tokenized.
+Handling of preference-like characters is tricky, especially > and <.
+
+=== normal
+--- prod
+sp {string
+    (state <s> ^foo stuff)
+-->
+}
+--- parses: true
+
+=== non-alphanumeric
+--- prod
+sp {garbage
+    (state <s> ^foo az09AZ$%&*+/:=?_<>-)
+-->
+}
+--- parses: true
+
+=== <xxx
+--- prod
+sp {carp
+    (state <s> ^foo <xxx)
+-->
+}
+--- parses: true
+
+=== xxx>
+--- prod
+sp {carp
+    (state <s> ^foo xxx>)
+--> (<s> ^foo foo)
+}
+--- parses: true
+
+=== brackets only
+--- prod
+sp {blank
+    (state <s> ^foo <<)
+--> (<s> ^foo bar)
+}
+--- parses: false
+
+=== two right angle brackets
+--- prod
+sp {blank
+    (state <s> ^foo >>)
+--> (<s> ^foo bar)
+}
+--- parses: false
+
+=== left and right angle brackets
+--- prod
+sp {blank
+    (state <s> ^foo <>)
+-->
+}
+--- parses: false
+
+=== right and left angle brackets
+--- prod
+sp {blank
+    (state <s> ^foo ><)
+--> (<s> ^foo bar)
+}
+--- parses: true
