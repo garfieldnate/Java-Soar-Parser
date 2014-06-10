@@ -1,0 +1,24 @@
+We just vary the value of foo
+=== positive int
+--- prod
+sp {one
+    (state <s> ^foo 1)
+-->
+}
+--- parses: true
+
+=== negative int
+--- prod
+sp {negative-one
+    (state <s> ^foo -1)
+-->
+}
+--- parses: true
+
+=== slightly bigger number
+--- prod
+sp {big-number
+    (state <s> ^foo 99286)
+-->
+}
+--- parses: true
