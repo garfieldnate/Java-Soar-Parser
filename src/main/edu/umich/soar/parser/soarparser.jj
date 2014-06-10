@@ -6,7 +6,7 @@ options
   STATIC = false;
   DEBUG_PARSER = false;
   DEBUG_LOOKAHEAD = false;
-  DEBUG_TOKEN_MANAGER = false;
+  DEBUG_TOKEN_MANAGER = true;
   ERROR_REPORTING = true;
   JAVA_UNICODE_ESCAPE = false;
   UNICODE_INPUT = false;
@@ -99,13 +99,10 @@ TOKEN:
 	 |<INTEGER_CONST: (["+","-"])? (["0"-"9"])+ >
 	 // this is symbolic constant, production name, and condition type all in one; need additional checking at parse time
 	 |<SYMBOLIC_CONST: (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/","<","=",">","?","_"])(["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","<","=",">","?","@","_"])* | ("|" (~["|"])* "|") >
-	 |<FLOATING_POINT_CONST:
-	 					(["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
-	 				| "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
-	 				| (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
-	 				| (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
-	  >
-	 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+	 |<FLOATING_POINT_CONST: <NORMAL> | <SCIENTIFIC> >
+	 //strangely enough, the section after the period is optional; '1.' is legal.
+	 |<#NORMAL: (["+","-"])? (["0"-"9"])* "." (["0"-"9"])* (["d","D","f","F"])? >
+	 |<#SCIENTIFIC: (["+","-"])? (["0"-"9"]) "." (["0"-"9"])+ ["e","E"] (["+","-"])? (["0"-"9"])+ (["d","D","f","F"])?>
 	 |<TCL_PREPROCESS: "[" (~["]"])* "]">
 }
 
