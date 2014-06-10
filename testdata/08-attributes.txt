@@ -1,0 +1,107 @@
+Test different attribute structures in LHS and RHS
+=== simple match
+--- prod
+sp {simple
+    (state <s> ^foo)
+-->
+}
+--- parses: true
+
+=== simple negative match
+--- prod
+sp {simple-negative
+    (state <s> -^foo)
+-->
+}
+--- parses: true
+
+=== variable match
+--- prod
+sp {variable
+    (state <s> ^<foo>)
+-->
+}
+--- parses: true
+
+=== simple concatenated match
+--- prod
+sp {simple-cat
+    (state <s> ^foo.bar)
+-->
+}
+--- parses: true
+
+=== concatenated match with bad parent
+Mimic a bug in Soar: https://code.google.com/p/soar/issues/detail?id=135
+Only string/quoted/variable can have children
+--- prod
+sp {cat
+    (state <s> ^foo.1.bar)
+}
+--- parses: false
+
+=== simple conjunction match
+--- prod
+sp {conjunction
+    (state <s> ^{foo bar})
+-->
+}
+--- parses: true
+
+=== complicated conjunction match
+--- prod
+sp {conjunction-mess
+    (state <s> ^{foo << bar baz >> <=> 21})
+-->
+}
+--- parses: true
+
+=== complicated conjunction concatenation match
+--- prod
+sp {conjunction-mess-cat
+    (state <s> ^{foo << bar baz >> <=> 21}.{fu bear}.| haleluja! |)
+-->
+}
+--- parses: true
+
+=== simple make
+--- prod
+sp {simple
+    (state <s>)
+--> (<s> ^foo <bar>)
+}
+--- parses: true
+
+=== concatenated make
+--- prod
+sp {cat
+    (state <s>)
+--> (<s> ^foo.bar <bar>)
+}
+--- parses: true
+
+=== concatenated make with bad parent
+Mimic a bug in Soar: https://code.google.com/p/soar/issues/detail?id=135
+Only string/quoted/variable can have a child.
+--- prod
+sp {cat
+    (state <s>)
+--> (<s> ^foo.1.bar)
+}
+--- parses: false
+
+=== concatenated variable make
+--- prod
+sp {variable
+    (state <s>)
+--> (<s> ^foo.<bar> <baz>)
+}
+--- parses: true
+
+=== concatenated varied make
+--- prod
+sp {varied
+    (state <s>)
+--> (<s> ^<foo>.| spa ce |.more.4 <bar>)
+}
+--- parses: true
