@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class SoarParser {
 	private static Pattern productionNamePattern = Pattern.compile("[0-9a-zA-Z][0-9a-zA-Z$%&*/<=>?_@:-]*");
 	private static Pattern symbolicConstantPattern = Pattern.compile("[a-zA-Z0-9$%&*+/<=>?_-][a-zA-Z0-9$%&*+/:<=>?_-]*");
-	private static Pattern quotedConstantPattern = Pattern.compile("\\|\\s*[^|]*\\s*\\|");
+	private static Pattern quotedConstantPattern = Pattern.compile("\\|(?:[^|]|\\\\\\|)*\\|");
 }
 PARSER_END(SoarParser)
 
@@ -98,7 +98,16 @@ TOKEN:
 	 |<VARIABLE: "<" (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","=","?","_"])+ ">" >
 	 |<INTEGER_CONST: (["+","-"])? (["0"-"9"])+ >
 	 // this is symbolic constant, production name, and condition type all in one; need additional checking at parse time
-	 |<SYMBOLIC_CONST: (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/","<","=",">","?","_"])(["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","<","=",">","?","@","_"])* | ("|" (~["|"])* "|") >
+	 |<SYMBOLIC_CONST:  <QUOTED> | ["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/","<","=",">","?","_"] (["a"-"z","A"-"Z","0"-"9","$","%","&","*","+","-","/",":","<","=",">","?","@","_"])* >
+	 |<#QUOTED: 
+	 	"|" 
+	 	(
+	 		"\\" "|"	//escaped quote character
+	 		| 			//or
+	 		~["|"] 		//any non-quote character
+	 	)* 
+	 	"|"
+	 >
 	 |<FLOATING_POINT_CONST: <NORMAL> | <SCIENTIFIC> >
 	 //strangely enough, the section after the period is optional; '1.' is legal.
 	 |<#NORMAL: (["+","-"])? (["0"-"9"])* "." (["0"-"9"])* (["d","D","f","F"])? >
