@@ -1,0 +1,49 @@
+test function calls
+=== arithmetic
+--- prod
+sp {arithmatic
+    (state <s>)
+--> (<s> ^foo (+ 1 5) (* 3 6) (/ 4 2) (- 3 1))
+}
+--- parses: true
+
+=== clrf
+--- prod
+sp {crlf
+    (state <s>)
+--> (<s> ^foo (crlf))
+}
+--- parses: true
+
+=== clrf structure
+--- parse_struct dive=RHS,0,attrValueMake,0,valueMake,0,rhsValue
+sp {crlf
+    (state <s>)
+--> (<s> ^foo (crlf))
+}
+--- expected_structure
+'(crlf)'
+
+=== string function with args
+--- prod
+sp {various-args
+    (state <s>)
+--> (<s> ^foo (buy <book> bag |shelf from Ikea's|))
+}
+--- parses: true
+
+=== can't specify RHS function name with variable
+--- prod
+sp {var-is-name
+    (state <s>)
+--> (<s> ^foo (<name> <arg>))
+}
+--- parses: false
+
+=== arguments are functions
+--- prod
+sp {crlf
+    (state <s>)
+--> (<s> ^foo (buy (groceryList <needs> <wants>) (askWife groceryList)))
+}
+--- parses: true
