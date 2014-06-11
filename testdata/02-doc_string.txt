@@ -30,7 +30,16 @@ sp {two-line-quote
 === unicode
 --- prod
 sp {utf8
-	"ã��"
+	"ぐ"
+	(state <s>)
+-->
+}
+--- parses: true
+
+=== escaped quote
+--- prod
+sp {escaped
+	"stuff that I \"think is cool"
 	(state <s>)
 -->
 }
@@ -54,3 +63,4 @@ sp {twice-doc
 -->
 }
 --- parses: false
+
