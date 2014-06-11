@@ -1,0 +1,57 @@
+=== strings
+--- prod
+sp {strings
+    (state <s> ^foo { a b })
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== strings no space
+--- prod
+sp {strings-spaceless
+    (state <s> ^foo {a b})
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== quotes
+--- prod
+sp {quoted
+    (state <s> ^foo { |a| |\|b| |c| })
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== disjunct
+--- prod
+sp {disjunct
+    (state <s> ^foo { << a b c >> << t u >> })
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== variable
+--- prod
+sp {variable
+    (state <s> ^foo { <bar> baz })
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== missing brace
+Curly brace cannot be part of a string in Soar
+--- prod
+sp {no-ending
+    (state <s> ^foo {a b)
+--> (<s> ^foo bar)
+}
+--- parses: false
+
+=== missing brace
+Curly brace cannot be part of a string in Soar
+--- prod
+sp {no-ending
+    (state <s> ^foo a b})
+--> (<s> ^foo bar)
+}
+--- parses: false
