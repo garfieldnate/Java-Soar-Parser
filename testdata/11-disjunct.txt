@@ -1,0 +1,33 @@
+=== strings
+--- prod
+sp {strings
+    (state <s> ^foo << a b >>)
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== quotes
+--- prod
+sp {quoted
+    (state <s> ^foo << |a| |\|b| |c| >>)
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== no space
+Soar takes '<<a' to be a string, then is baffled by '>>'.
+--- prod
+sp {no-space
+    (state <s> ^foo <<a b >>)
+--> (<s> ^foo bar)
+}
+--- parses: false
+
+=== no space
+Soar takes 'b>>' to be a string, and so cannot finish the disjunction.
+--- prod
+sp {no-space
+    (state <s> ^foo << b>>)
+--> (<s> ^foo bar)
+}
+--- parses: false
