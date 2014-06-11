@@ -95,10 +95,10 @@ TOKEN:
 	 |<DOC_STRING:  
 	 	"\"" 
 	 	(
-	 		"\\" "\""	//escaped quote character
-	 		| 			//or
-	 		~["\""] 	//any non-quote character
-	 	)* 
+	 		"\\" ~[]		//any escaped character
+	 		| 				//or
+	 		~["\"","\\"]	//any non-quote, non-escape character
+	 	)*
 	 	"\""
 	 >
      |<PRODTYPE:  (":chunk"|":default"|":o-support"|":i-support"|":monitor"|":interrupt"|":template")>
@@ -110,9 +110,9 @@ TOKEN:
 	 |<#QUOTED: 
 	 	"|" 
 	 	(
-	 		"\\" "|"	//escaped quote character
+	 		"\\" ~[]	//any escaped character
 	 		| 			//or
-	 		~["|"] 		//any non-quote character
+	 		~["|","\\"] //any non-quote, non-escape character
 	 	)* 
 	 	"|"
 	 >

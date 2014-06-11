@@ -48,6 +48,15 @@ sp {escaped
 }
 --- parses: true
 
+=== slash escaping
+this should not parse because the slash before the first bar is escaped, so that the extra bar is not escaped
+--- prod
+sp {escaped
+    (state <s> ^foo |a slash \\||)
+--> (<s> ^foo bar)
+}
+--- parses: false
+
 === slash not used as an escape
 --- prod
 sp {not-escaped

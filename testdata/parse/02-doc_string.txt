@@ -45,6 +45,16 @@ sp {escaped
 }
 --- parses: true
 
+=== escaped backslash
+should not parse because the " is not escaped because the backslash is.
+--- prod
+sp {escaped
+	"stuff that I \\"think is cool"
+	(state <s>)
+-->
+}
+--- parses: false
+
 === two lines, two quotes
 --- prod
 sp {twice-doc
