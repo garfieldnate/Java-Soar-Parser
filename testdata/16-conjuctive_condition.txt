@@ -1,0 +1,39 @@
+=== positive
+--- prod
+sp {positive
+    (state <s>)
+    {
+        (<s> ^foo <bar>)
+        (<bar> ^baz boo)
+    }
+-->
+}
+--- parses: true
+
+=== negative
+--- prod
+sp {negative
+    (state <s>)
+    -{
+        (<s> ^foo <bar>)
+        (<bar> ^baz boo)
+    }
+-->
+}
+--- parses: true
+
+=== nested
+--- prod
+sp {negative-nested
+    (state <s>)
+    -{
+        (<s> ^foo <bar>)
+        (<bar> ^baz boo)
+        -{
+            (<bar> ^boo <baz>)
+            (<baz> ^foo <bar>)
+        }
+    }
+-->
+}
+--- parses: true
