@@ -1,9 +1,12 @@
+Test that different kinds of conditions are parseable.
+
 Conditions which have attribute/value matches but no bound variable parse,
 but Soar prints a warning:
  Warning: On the LHS of production xyz, identifier <s*1>
  is not connected to any goal or impasse.
 The two that say "Crashes Soar" are related to this bug:
 https://code.google.com/p/soar/issues/detail?id=161
+
 === empty condition
 Crashes Soar
 --- prod
@@ -79,3 +82,13 @@ sp {impasse
 --> (<i> ^foo <bar>)
 }
 --- parses: true
+
+=== negative
+--- prod
+sp {negative
+	(state <s>)
+	-(<s> ^foo bar)
+-->
+}
+--- parses: true
+
