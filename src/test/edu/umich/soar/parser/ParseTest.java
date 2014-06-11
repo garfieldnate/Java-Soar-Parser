@@ -28,7 +28,7 @@ import edu.umich.soar.parser.SoarParser;
 public class ParseTest {
 	
 	// the test data is located in the following directory inside the project
-	private static final String TEST_DATA_DIR = "testdata";
+	private static final String TEST_DATA_DIR = "testdata" + File.separatorChar + "parse";
 	
 	private String testProd;
 	private boolean expectSucceed;
