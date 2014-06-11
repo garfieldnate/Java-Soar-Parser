@@ -1,0 +1,41 @@
+test preferences (<, =, etc.)
+manual page 58-9
+=== unary
+--- prod
+sp {unary
+    (state <s>)
+--> (<s> ^operator bar @)
+}
+--- parses: true
+
+=== unary
+--- prod
+sp {unary
+    (state <s>)
+--> (<s> ^operator <o> ~)
+}
+--- parses: true
+
+=== double value
+--- prod
+sp {double
+    (state <s>)
+--> (<s> ^operator <o1> <o2>)
+}
+--- parses: true
+
+=== binary
+--- prod
+sp {binary
+    (state <s>)
+--> (<s> ^operator 1 < <o> )
+}
+--- parses: true
+
+=== multiple
+--- prod
+sp {multiple
+    (state <s>)
+--> (<s> ^operator <o1> <o2> + <o2> < <o1> <o3> =, <o4>)
+}
+--- parses: true
