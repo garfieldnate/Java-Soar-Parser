@@ -1,0 +1,67 @@
+test preferences (<=, etc.)
+=== greater than number
+--- prod
+sp {breater-than
+    (state <s> ^foo > 1)
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== same-type as variable
+--- prod
+sp {same-type
+    (state <s> ^foo <=> <x>)
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== not equal to quoted string
+--- prod
+sp {inequality
+    (state <s> ^foo <> |foo bar| )
+--> (<s> ^bar ||)
+}
+--- parses: true
+
+=== multiple vals
+--- prod
+sp {multiple-vals
+    (state <s> ^foo 1 b |stuff|)
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== multiple tests
+--- prod
+sp {multiple-tests
+    (state <s> ^foo 1 > 0 <=> 45 <> NaN)
+--> (<s> ^foo bar)
+}
+--- parses: true
+
+=== conjunction with unary prefs
+from page 45 of the manual
+--- prod
+sp {conjunct-unary-pref
+    (state <s> ^foo { <= <a> >= <b> })
+--> (<s> ^bar ||)
+}
+--- parses: true
+
+=== conjunction with binary pref
+from page 45 of the manual
+--- prod
+sp {conjunct-binary-pref
+    (state <s> ^foo { <a> > <b> })
+--> (<s> ^bar ||)
+}
+--- parses: true
+
+=== conjunction with mixed prefs
+from page 45 of the manual
+--- prod
+sp {conjunct-mixed-pref
+    (state <s> ^foo { <=> <x> > <y> << 1 2 3 4 >> <z> } )
+--> (<s> ^bar ||)
+}
+--- parses: true
