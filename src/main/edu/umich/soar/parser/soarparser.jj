@@ -36,7 +36,7 @@ public class SoarParser {
 }
 PARSER_END(SoarParser)
 
-SKIP:
+< DEFAULT, IN_SOAR_PRODUCTION > SKIP:
 {
 	 < "#" (~["\n","\r"])*>
 	|<";#" (~["\n","\r"])*>
@@ -69,16 +69,6 @@ TOKEN:
 		|"stop-soar"|"topd"|"tsi"|"unalias"|"variables"|"version"|"viSTEAM"|"vt"
 		|"vtutor"|"wake-from-attention-lapse"|"wake"|"warnings"|"watch"
 	)(~["\n","\r"])*>
-}
-
-< IN_SOAR_PRODUCTION > SKIP:
-{
-	 < "#" (~["\n","\r"])*>
-	|<";#" (~["\n","\r"])*>
-	|" "
-	|"\t"
-	|"\n"
-	|"\r"
 }
 
 < IN_SOAR_PRODUCTION > TOKEN:
