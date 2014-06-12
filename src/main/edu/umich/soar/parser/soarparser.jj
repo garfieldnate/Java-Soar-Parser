@@ -36,7 +36,7 @@ public class SoarParser {
 }
 PARSER_END(SoarParser)
 
-< DEFAULT, IN_SOAR_PRODUCTION > SKIP:
+< DEFAULT, IN_SOAR_PRODUCTION, IN_SMEM > SKIP:
 {
 	 < "#" (~["\n","\r"])*>
 	|<";#" (~["\n","\r"])*>
@@ -50,9 +50,7 @@ TOKEN:
 {
     <SP:        "sp"> : IN_SOAR_PRODUCTION
     |<GP:       "gp"> : IN_SOAR_PRODUCTION
-	|<SMEM: "smem" >
-	//assume this comes after <SMEM>; the required subsequent tokens are located in the IN_SOAR_PRODUCTION space. 
-    |<ADD_OPT: "--add">: IN_SOAR_PRODUCTION 
+	|<SMEM: "smem" > : IN_SMEM
     |<SOARCMD:  (
 		"global"|"set"| "puts"| "alias"|"attention-lapse"|"attribute_preferences_mode"
 		|"capture-input"|"chunk-name-format"|"command-to-file"
@@ -69,6 +67,22 @@ TOKEN:
 		|"stop-soar"|"topd"|"tsi"|"unalias"|"variables"|"version"|"viSTEAM"|"vt"
 		|"vtutor"|"wake-from-attention-lapse"|"wake"|"warnings"|"watch"
 	)(~["\n","\r"])*>
+}
+
+<IN_SMEM> TOKEN:
+{
+	// the required subsequent tokens are located in the IN_SOAR_PRODUCTION space. 
+    <ADD_OPT: "--add">: IN_SOAR_PRODUCTION
+    //anything besides "--add" and no newlines allowed. Slurp, ignore, and revert to default token space.
+    |< NON_ADD_OPT: (
+    	~["-","\n","\r"]
+    	| "-" ~["-","\n","\r"]
+    	| "--" ~["a","\n","\r"]
+    	| "--a" ~["d","\n","\r"]
+    	| "--ad" ~["d","\n","\r"]
+    	//otherwise "--ad\n" would crash the tokenizer
+    	|"--ad" ["\r","\n"]
+    )+ >: DEFAULT
 }
 
 < IN_SOAR_PRODUCTION > TOKEN:
@@ -146,6 +160,7 @@ Vector VisualSoarFile() :
       )
       | <SOARCMD>
       | smemAdd()
+      | <SMEM> <NON_ADD_OPT>
 	)*
 	<EOF>
 	{
@@ -153,6 +168,7 @@ Vector VisualSoarFile() :
 	}
 }
 
+//smem --add {...} 
 List<VarAttrValMake> smemAdd() :
 {
 	List<VarAttrValMake> contents = new ArrayList<VarAttrValMake>();

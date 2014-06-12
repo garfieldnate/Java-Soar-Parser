@@ -10,6 +10,11 @@ preferences --wmes blah blah blah
 smem --add {(<stuff> ^foo <bar>}
 --- parses: false
 
+=== smem not --add
+--- prod
+smem --set learning on
+--- parses: true
+
 === smem --add
 --- prod
 smem --add {
@@ -27,4 +32,17 @@ smem --add {
    (<a00> ^digit1 0 ^digit2 0 ^sum 0 ^carry-borrow 0)
    (<a01> ^digit1 0 ^digit2 1 ^sum 1 ^carry-borrow 0)
 }
+--- parses: true
+
+=== smem mixed add/non-add
+--- prod
+smem --set learning on
+smem --add {
+   (<arithmetic> ^facts <a00> <a01> <a02>)
+}
+--- parses: true
+
+=== smem almost add
+--- prod
+smem blah blah --ad
 --- parses: true
