@@ -1,0 +1,26 @@
+=== pound sign
+--- prod
+sp {pound
+	(state <s>)#stuff here
+--># stuff here, too
+	(<s> ^foo <bar>)
+}
+--- parses: true
+
+=== colon pound
+--- prod
+sp {colon
+	(state <s>);#stuff here
+-->;# stuff here, too
+	(<s> ^foo <bar>)
+}
+--- parses: true
+
+=== colon whitespace pound
+--- prod
+sp {colon-space
+	(state <s>); #stuff here
+-->;  # stuff here, too
+	(<s> ^foo <bar>)
+}; 	# and here (contains \t)
+--- parses: true

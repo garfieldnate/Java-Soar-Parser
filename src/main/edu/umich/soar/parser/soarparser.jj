@@ -38,8 +38,7 @@ PARSER_END(SoarParser)
 
 < DEFAULT, IN_SOAR_PRODUCTION, IN_SMEM > SKIP:
 {
-	 < "#" (~["\n","\r"])*>
-	|<";#" (~["\n","\r"])*>
+	 < (";" ([" ","\t"])*)? "#" (~["\n","\r"])*>
 	|" "
 	|"\t"
 	|"\n"
