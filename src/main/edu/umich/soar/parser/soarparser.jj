@@ -4,9 +4,9 @@ options
   CHOICE_AMBIGUITY_CHECK = 2;
   OTHER_AMBIGUITY_CHECK = 1;
   STATIC = false;
-  DEBUG_PARSER = false;
+  DEBUG_PARSER = true;
   DEBUG_LOOKAHEAD = false;
-  DEBUG_TOKEN_MANAGER = false;
+  DEBUG_TOKEN_MANAGER = true;
   ERROR_REPORTING = true;
   JAVA_UNICODE_ESCAPE = false;
   UNICODE_INPUT = false;
@@ -50,7 +50,25 @@ TOKEN:
 {
     <SP:        "sp"> : IN_SOAR_PRODUCTION
     |<GP:       "gp"> : IN_SOAR_PRODUCTION
-    |<SOARCMD:  ("global"|"set"|"puts"|"alias"|"attention-lapse"|"attribute_preferences_mode"|"capture-input"|"chunk-name-format"|"command-to-file"|"default_wme_depth"|"dirs"|"echo"|"epmem"|"excise"|"explain-backtraces"|"firing-counts"|"format-watch"|"gds_print"|"help"|"indifferent-selection"|"init-soar"|"input-period"|"internal-symbols"|"io"|"learn"|"log"|"matches"|"max-chunks"|"max-elaborations"|"max-nil-output-cycles"|"max_chunks"|"max_elaborations"|"memories"|"monitor"|"multi-attributes"|"o-support-mode"|"output-strings-destination"|"o_support_mode"|"popd"|"predefined-aliases"|"predict"|"preferences"|"print"|"production-find"|"pushd"|"pwatch"|"quit"|"remove-wme"|"replay-input"|"rete-net"|"rhsfun"|"rl"|"run"|"save_backtraces"|"select"|"send"|"soar"|"soar8"|"soarnews"|"soartk"|"start-attention-lapse"|"stats"|"stop-soar"|"topd"|"tsi"|"unalias"|"variables"|"version"|"viSTEAM"|"vt"|"vtutor"|"wake-from-attention-lapse"|"wake"|"warnings"|"watch")(~["\n","\r"])*>
+	|<SMEM: "smem" >
+	//assume this comes after <SMEM>; the required subsequent tokens are located in the IN_SOAR_PRODUCTION space. 
+    |<ADD_OPT: "--add">: IN_SOAR_PRODUCTION 
+    |<SOARCMD:  (
+		"global"|"set"| "puts"| "alias"|"attention-lapse"|"attribute_preferences_mode"
+		|"capture-input"|"chunk-name-format"|"command-to-file"
+		|"default_wme_depth"|"dirs"|"echo"|"epmem"|"excise"|"explain-backtraces"
+		|"firing-counts"|"format-watch"|"gds_print"|"help"|"indifferent-selection"
+		|"init-soar"|"input-period"|"internal-symbols"|"io"|"learn"|"log"
+		|"matches"|"max-chunks"|"max-elaborations"|"max-nil-output-cycles"
+		|"max_chunks"|"max_elaborations"|"memories"|"monitor"|"multi-attributes"
+		|"o-support-mode"|"output-strings-destination"|"o_support_mode"|"popd"
+		|"predefined-aliases"|"predict"|"preferences"|"print"|"production-find"
+		|"pushd"|"pwatch"|"quit"|"remove-wme"|"replay-input"|"rete-net"|"rhsfun"
+		|"rl"|"run"|"save_backtraces"|"select"|"send"|"soar"|"soar8"|"soarnews"
+		|"soartk"|"start-attention-lapse"|"stats"
+		|"stop-soar"|"topd"|"tsi"|"unalias"|"variables"|"version"|"viSTEAM"|"vt"
+		|"vtutor"|"wake-from-attention-lapse"|"wake"|"warnings"|"watch"
+	)(~["\n","\r"])*>
 }
 
 < IN_SOAR_PRODUCTION > SKIP:
@@ -137,10 +155,32 @@ Vector VisualSoarFile() :
       }
       )
       | <SOARCMD>
+      | smemAdd()
 	)*
 	<EOF>
 	{
 		return vec;
+	}
+}
+
+List<VarAttrValMake> smemAdd() :
+{
+	List<VarAttrValMake> contents = new ArrayList<VarAttrValMake>();
+	VarAttrValMake item;
+}
+{
+	<SMEM> <ADD_OPT>
+	<LBRACE> 
+	(
+		item = varAttrValMake()
+		{
+			contents.add(item);
+		}
+	)+
+	<RBRACE>
+	{
+		token_source.SwitchTo(DEFAULT); //done using the IN_SOAR_PRODUCTION token source
+		return contents;
 	}
 }
 

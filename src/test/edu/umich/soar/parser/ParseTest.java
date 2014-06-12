@@ -134,7 +134,7 @@ public class ParseTest {
 		//note that this conversion to an input stream is only good for small strings
 		SoarParser parser = new SoarParser(new ByteArrayInputStream(testProd.getBytes(encoding)));
 		parser.enable_tracing();
-		parser.soarProduction();
+		parser.VisualSoarFile();
 	}
 
 }
