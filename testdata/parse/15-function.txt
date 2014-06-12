@@ -15,15 +15,6 @@ sp {crlf
 }
 --- parses: true
 
-=== clrf structure
---- parse_struct dive=RHS,0,attrValueMake,0,valueMake,0,rhsValue
-sp {crlf
-    (state <s>)
---> (<s> ^foo (crlf))
-}
---- expected_structure
-'(crlf)'
-
 === string function with args
 --- prod
 sp {various-args
