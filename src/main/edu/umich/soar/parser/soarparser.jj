@@ -23,6 +23,8 @@ PARSER_BEGIN(SoarParser)
 package edu.umich.soar.parser;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 /**
 	@author Brad Jones
 	if you are looking at the java file, it isn't going to make a lot of sense
@@ -33,6 +35,15 @@ public class SoarParser {
 	private static Pattern productionNamePattern = Pattern.compile("[0-9a-zA-Z][0-9a-zA-Z$%&*/<=>?_@:-]*");
 	private static Pattern symbolicConstantPattern = Pattern.compile("[a-zA-Z0-9$%&*+/<=>?_-][a-zA-Z0-9$%&*+/:<=>?_-]*");
 	private static Pattern quotedConstantPattern = Pattern.compile("\\|(?:[^|]|\\\\\\|)*\\|");
+
+    public static void main(String[] args) throws UnsupportedEncodingException, ParseException{
+      	if(args.length != 1)      	{			throw new IllegalArgumentException("Usage: java SoarParser \"sp{...}\"");
+      	}
+        //note that this conversion to an input stream is only good for small strings
+        SoarParser parser = new SoarParser(new ByteArrayInputStream(args[0].getBytes("UTF-8")));
+        parser.enable_tracing();
+        parser.soarProduction();
+    }
 }
 PARSER_END(SoarParser)
 
