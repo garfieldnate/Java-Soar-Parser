@@ -64,6 +64,22 @@ sp {conjunction-mess-cat
 }
 --- parses: true
 
+=== simple disjunction match
+--- prod
+sp {disjunction
+    (state <s> ^<< foo bar >>)
+-->
+}
+--- parses: true
+
+=== disjunction concatenation match
+--- prod
+sp {disjunction-mess-cat
+    (state <s> ^<< foo bar >>.<< fu bear >>.| haleluja! |)
+-->
+}
+--- parses: true
+
 === simple make
 --- prod
 sp {simple
