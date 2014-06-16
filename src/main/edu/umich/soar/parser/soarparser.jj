@@ -33,6 +33,8 @@ public class SoarParser {
 	private static Pattern productionNamePattern = Pattern.compile("[0-9a-zA-Z][0-9a-zA-Z$%&*/<=>?_@:-]*");
 	private static Pattern symbolicConstantPattern = Pattern.compile("[a-zA-Z0-9$%&*+/<=>?_-][a-zA-Z0-9$%&*+/:<=>?_-]*");
 	private static Pattern quotedConstantPattern = Pattern.compile("\\|(?:[^|]|\\\\\\|)*\\|");
+	//set to true if currently inside of a GP production
+	private boolean inGP = false;
 }
 PARSER_END(SoarParser)
 
@@ -110,8 +112,13 @@ TOKEN:
      |<RBRACE:		"}">
 	 |<RPAREN:		")">
 	 |<TILDE:		"~">
-	 |<LSQBRACET:   "[">
-	 |<RSQBRACET:   "]">
+	 |<ESCAPED_SPACE: "\\ ">
+	 |<LSQBRACKET:   "[">
+	 |<RSQBRACKET:   "]">
+	 //GP patterns must be space separated and cannot be used with dots, and these token enforce that by matching but never being used in the parser
+	 |<RLSQBRACKET: "][">
+	 |<RSQBRACKET_DOT: "].">
+	 |<DOT_LSQBRACKET: ".[">
 	 |<QUOTE:		"\"">
 	 |<DOC_STRING:  
 	 	"\"" 
@@ -141,7 +148,7 @@ TOKEN:
 	 //strangely enough, the section after the period is optional; '1.' is legal.
 	 |<#NORMAL: (["+","-"])? (["0"-"9"])* "." (["0"-"9"])* (["d","D","f","F"])? >
 	 |<#SCIENTIFIC: (["+","-"])? (["0"-"9"]) "." (["0"-"9"])+ ["e","E"] (["+","-"])? (["0"-"9"])+ (["d","D","f","F"])?>
-	 |<TCL_PREPROCESS: "[" (~["]"])* "]">
+	 //|<TCL_PREPROCESS: "[" (~["]"])* "]">
 }
 
 
@@ -199,7 +206,15 @@ SoarProduction soarProduction() :
 }
 {
 // Begining of the production
-	<SP>
+	(
+	  <SP>
+	  {
+	    inGP = false;	  }
+	  |
+	  <GP>
+	  {		inGP = true;
+	  }
+	)
 	(<LBRACE> | <QUOTE>)
 // its name
 	t = <SYMBOLIC_CONST>
@@ -227,6 +242,7 @@ SoarProduction soarProduction() :
 	(<RBRACE> | <QUOTE>)
 	{
         token_source.SwitchTo(DEFAULT);  //No longer "IN_SOAR_PRODUCTION"
+        inGP = false;
         return sp;
     }
 }
@@ -291,8 +307,7 @@ Condition condition() :
 	(<HYPHEN> { negated = true; })?
 	(pcond = positiveCondition())
 	{ return new Condition(negated,pcond); }
-	| <TCL_PREPROCESS>
-	{ return null; }
+//	| <TCL_PREPROCESS>//	{ return null; }
 }
 
 // Ok
@@ -376,12 +391,49 @@ AttributeValueTest attributeValueTest() :
 		avt.negate();
 	})?
 	<CARET>
-	(at = attributeTest())
-	{ avt.add(at); }
-	(<PERIOD> at = attributeTest() { avt.add(at); })*
+	(
+		(at = attributeTest())
+		{ avt.add(at); }
+		(<PERIOD> at = attributeTest() { avt.add(at); })*
+		|
+		LOOKAHEAD( {inGP} )(
+			gpPattern()
+			|
+			gpAttValPattern() 
+		)
+	)
 	(vt = valueTest() { avt.add(vt); } )*
 	{ return avt;}
+}
 
+void gpPattern() :
+{
+	Token t;
+	Constant c;
+}
+{
+    < LSQBRACKET >
+    //equivalent to multiple single values
+    (
+		t = <VARIABLE>
+		|
+		c = constant()
+	)+
+    < RSQBRACKET >
+//    {return null;}
+}
+
+void gpAttValPattern() :
+{}
+{
+    < LSQBRACKET >
+    //equivalent to multiple single values
+    (
+		singleTest()
+		<ESCAPED_SPACE>
+		singleTest()
+	)+
+    < RSQBRACKET >
 }
 
 // Ok
@@ -409,6 +461,10 @@ ValueTest valueTest() :
 	  }
 	  )?
 	  { return vt; }
+	|
+	LOOKAHEAD( {inGP} )
+	gpPattern()
+	{ return null; }
 
 	// | ConditionsForOneId() John Laird told me to take this out 7/6/99
 }
@@ -613,9 +669,7 @@ Action action() :
 	{
 		return new Action(fc);
 	}
-	| <TCL_PREPROCESS> {
-		return null;
-	}
+//	| <TCL_PREPROCESS> {//		return null;//	}
 }
 
 // Ok
@@ -646,7 +700,7 @@ FunctionCall functionCall() :
 	(funcName = functionName() { funcCall = new FunctionCall(funcName); } )
 	(
 	rhsv = rhsValue() { funcCall.add(rhsv); }
-	| <TCL_PREPROCESS>
+//	| <TCL_PREPROCESS>
 	)*
 	<RPAREN>
 	{ return funcCall; }
@@ -703,12 +757,22 @@ AttributeValueMake attributeValueMake() :
 	ValueMake vm;
 }
 {
-	<CARET> (rhsv = rhsValue()
-	{ avm.add(rhsv); })
-
-	(<PERIOD> rhsv = rhsValue() { avm.add(rhsv); })*
-	( vm = valueMake() { avm.add(vm); } )+
-	{return avm; }
+	<CARET> (
+	    (rhsv = rhsValue()
+	    { avm.add(rhsv); })
+		(<PERIOD> rhsv = rhsValue() { avm.add(rhsv); })*
+		|
+		LOOKAHEAD( {inGP} )
+		gpPattern()
+	)
+	(
+		( vm = valueMake() { avm.add(vm); } )+
+		{return avm; }
+		|
+		LOOKAHEAD( {inGP} )
+		gpPattern()
+		{ return null; } 
+	)
 }
 
 
