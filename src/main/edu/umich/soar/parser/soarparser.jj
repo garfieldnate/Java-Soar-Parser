@@ -4,9 +4,9 @@ options
   CHOICE_AMBIGUITY_CHECK = 2;
   OTHER_AMBIGUITY_CHECK = 1;
   STATIC = false;
-  DEBUG_PARSER = true;
+  DEBUG_PARSER = false;
   DEBUG_LOOKAHEAD = false;
-  DEBUG_TOKEN_MANAGER = true;
+  DEBUG_TOKEN_MANAGER = false;
   ERROR_REPORTING = true;
   JAVA_UNICODE_ESCAPE = false;
   UNICODE_INPUT = false;
@@ -73,7 +73,7 @@ TOKEN:
 		|"predefined-aliases"|"predict"|"preferences"|"print"|"production-find"
 		|"pushd"|"pwatch"|"quit"|"remove-wme"|"replay-input"|"rete-net"|"rhsfun"
 		|"rl"|"run"|"save_backtraces"|"select"|"send"|"soar"|"soar8"|"soarnews"
-		|"soartk"|"start-attention-lapse"|"stats"
+		|"soartk"|"start-attention-lapse"|"stats"|"timers"
 		|"stop-soar"|"topd"|"tsi"|"unalias"|"variables"|"version"|"viSTEAM"|"vt"
 		|"vtutor"|"wake-from-attention-lapse"|"wake"|"warnings"|"watch"
 	)(~["\n","\r"])*>
