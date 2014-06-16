@@ -6223,19 +6223,6 @@ sp {water-jug*propose*pour
    (<o> ^name pour
         ^empty-jug <i>
         ^fill-jug <j>)}
-gp {rl*water-jug*pour
-   (state <s> ^name water-jug 
-              ^operator <op> +
-              ^jug <j1> <j2>)
-   (<op> ^name pour 
-         ^empty-jug.volume [3 5])
-   (<j1> ^volume 3 
-         ^contents [0 1 2 3])
-   (<j2> ^volume 5 
-         ^contents [0 1 2 3 4 5])
--->
-   (<s> ^operator <op> = 0)
-}
 sp {water-jug*apply*pour*not-empty-source
    (state <s> ^name water-jug
               ^operator <o>)
@@ -6272,19 +6259,6 @@ sp {water-jug*propose*empty
    (<s> ^operator <o> +)
    (<o> ^name empty
         ^empty-jug <j>)}
-gp {rl*water-jug*empty
-   (state <s> ^name water-jug 
-              ^operator <op> +
-              ^jug <j1> <j2>)
-   (<op> ^name empty 
-         ^empty-jug.volume [3 5])
-   (<j1> ^volume 3 
-         ^contents [0 1 2 3])
-   (<j2> ^volume 5 
-         ^contents [0 1 2 3 4 5])
--->
-   (<s> ^operator <op> = 0)
-}
 sp {water-jug*apply*empty
    (state <s> ^name water-jug
               ^operator <o>
@@ -6304,19 +6278,6 @@ sp {water-jug*propose*fill
    (<s> ^operator <o> +)
    (<o> ^name fill
         ^fill-jug <j>)}
-gp {rl*water-jug*fill
-   (state <s> ^name water-jug 
-              ^operator <op> +
-              ^jug <j1> <j2>)
-   (<op> ^name fill 
-         ^fill-jug.volume [3 5])
-   (<j1> ^volume 3 
-         ^contents [0 1 2 3])
-   (<j2> ^volume 5 
-         ^contents [0 1 2 3 4 5])
--->
-   (<s> ^operator <op> = 0)
-}
 sp {water-jug*apply*fill
    (state <s> ^name water-jug
               ^operator <o>
