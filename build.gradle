@@ -1,6 +1,31 @@
   apply plugin: 'java'
   apply plugin: 'eclipse'
 
+  //compile .jj file in src/main/javacc
+  buildscript {
+      repositories {
+          mavenCentral()
+      }
+      dependencies {
+          classpath group: 'ca.coglinc', name: 'javacc-gradle-plugin', version: '1.0.0'
+      }
+  }
+  apply plugin: 'javacc'
+  //javaccPackage = "edu.umich.soar.parser";
+  //compileJavacc.inputDirectory =
+  //  new File(getProject().getBuildDir().getAbsolutePath() +
+  //      File.separator + javaccPackage.replace(".", File.separator))
+
+  //add JavaCC-generated code to Eclipse source directories
+  sourceSets {
+    main {
+      java {
+        srcDir compileJavacc.outputDirectory
+      }
+    }
+  }
+  eclipseClasspath.dependsOn("compileJavacc")
+
   repositories {
     mavenCentral()
   }
