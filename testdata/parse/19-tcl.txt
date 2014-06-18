@@ -1,0 +1,25 @@
+Test TCL preprocessing tokens
+
+=== TCL token as a condition
+--- prod
+sp {condition-tcl
+    [tcl_make_condition]
+-->
+}
+--- parses: true
+
+=== TCL token as an action
+--- prod
+sp {action-tcl
+    (state <s>)
+--> [tcl_make_action]
+}
+--- parses: true
+
+=== TCL as function arguments
+--- prod
+sp {args-tcl
+    (state <s>)
+--> (<s> ^foo (buy [tcl_make_args]))
+}
+--- parses: true
