@@ -1,6 +1,23 @@
   apply plugin: 'java'
   apply plugin: 'eclipse'
 
+  //compile .jj file in src/main/javacc
+  buildscript {
+      repositories {
+          mavenCentral()
+      }
+      dependencies {
+          classpath group: 'ca.coglinc', name: 'javacc-gradle-plugin', version: '1.0.0'
+      }
+  }
+  apply plugin: 'javacc'
+
+  //Compiling fails unless we use the same folder for source and
+  //generated source.
+  compileJavacc.outputDirectory = new File(
+    rootDir.getAbsolutePath() + File.separator +
+    "src" + File.separator + "main")
+
   repositories {
     mavenCentral()
   }
