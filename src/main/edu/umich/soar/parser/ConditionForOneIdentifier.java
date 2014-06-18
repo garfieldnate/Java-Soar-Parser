@@ -5,12 +5,12 @@ import java.util.*;
 public final class ConditionForOneIdentifier {
 	// Data Members
 	private StateDeclaration state;
-	private Pair d_variable;
+	private Test d_test;
 	private List d_attributeValueTests = new LinkedList();
 	
 	// Constructor
-	public ConditionForOneIdentifier(StateDeclaration state, Pair variable) {
-		d_variable = variable;
+	public ConditionForOneIdentifier(StateDeclaration state, Test test) {
+		d_test = test;
 		this.state = state;
 	}
 		
@@ -19,8 +19,8 @@ public final class ConditionForOneIdentifier {
 		return state;
 	}
 	
-	public final Pair getVariable() {
-		return d_variable;
+	public final Test getTest() {
+		return d_test;
 	}
 	
 	public final void add(AttributeValueTest avt) {
@@ -29,5 +29,9 @@ public final class ConditionForOneIdentifier {
 	
 	public final Iterator getAttributeValueTests() {
 		return d_attributeValueTests.iterator();
+	}
+
+	public Pair getVariable() {
+		throw new UnsupportedOperationException("TODO: needs to extract the bound variable from the starting test");
 	}
 }

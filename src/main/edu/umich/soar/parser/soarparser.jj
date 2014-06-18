@@ -335,6 +335,7 @@ PositiveCondition positiveCondition() :
 ConditionForOneIdentifier conditionForOneIdentifier() :
 {
 	Token t;
+	Test test;
 	AttributeValueTest avt;
 	ConditionForOneIdentifier cfoi = null;
 	StateDeclaration state = StateDeclaration.NONE;
@@ -352,14 +353,14 @@ ConditionForOneIdentifier conditionForOneIdentifier() :
 		}
 	)?
 	(
-		(t = <VARIABLE>
+		(test = test()
 		{
-			cfoi = new ConditionForOneIdentifier(state,new Pair(t.image,t.beginLine));
+			cfoi = new ConditionForOneIdentifier(state,test);
 		}
 		)?
 	)
 	{
-	    //for conditions that don't bind with a variable, which often give warnings or even crash Soar, but should still parse
+	    //for conditions that don't bind with a variable or test, which often give warnings or even crash Soar, but should still parse
 		if(cfoi == null){
 			cfoi = new ConditionForOneIdentifier(state, null);
 		}
