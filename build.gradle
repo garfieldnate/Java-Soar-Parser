@@ -12,12 +12,6 @@
   }
   apply plugin: 'javacc'
 
-  //Compiling fails unless we use the same folder for source and
-  //generated source.
-  compileJavacc.outputDirectory = new File(
-    rootDir.getAbsolutePath() + File.separator +
-    "src" + File.separator + "main")
-
   repositories {
     mavenCentral()
   }

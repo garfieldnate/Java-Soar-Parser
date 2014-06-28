@@ -1,5 +1,9 @@
 #Todo list
 
+##Engineering
+-Figure out how to test structure
+-Integrate improvements from Soar-Editor
+
 ##Building
 -follow progress on https://github.com/johnmartel/javaccPlugin/issues/2
 
