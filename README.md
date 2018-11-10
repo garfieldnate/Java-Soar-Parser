@@ -1,4 +1,4 @@
-#Soar Parser
+# Soar Parser
 
 This project is a standalone parser for the Soar programming language. The parser is implemented using JavaCC and returns a full AST structure for Soar source files. My goals for this project are:
 
@@ -10,11 +10,11 @@ This project forked the parser from VisualSoar as its starting point, but
 will not remain backwards compatible. Most of the tests will be taken from
 [Soar::Production](https://metacpan.org/module/Soar::Production::Parser).
 
-#Limitations
+# Limitations
 The parser does not support `gp` productions at this time. It does,
 however, allow for [JSoar](http://soartech.github.io/jsoar/)-style TCL expansions in square brackets.
 
-##References
+## References
 
 * [SoarSuite project home](https://code.google.com/p/soar/)
 * [JSoar](http://soartech.github.io/jsoar/)
